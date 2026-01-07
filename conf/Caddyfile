@@ -1,0 +1,55 @@
+# ================== Main wildcard domain (*.iionstech.com.np) ==================
+*.iionstech.com.np, iionstech.com.np {
+        tls {
+                dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+        }
+
+        header {
+                -Server
+                X-Content-Type-Options "nosniff"
+                X-Frame-Options "DENY"
+                Referrer-Policy "strict-origin-when-cross-origin"
+                X-XSS-Protection "1; mode=block"
+        }
+
+        handle /media/* {
+                root * /media
+                file_server
+        }
+
+        handle /static/* {
+                root * /static
+                file_server
+        }
+
+
+        @backend {
+                path /api/v1/* /console/*
+        }
+
+        handle @backend {
+                reverse_proxy backend:8000
+        }
+
+        reverse_proxy frontend:3000
+}
+
+# ================== goodgoing.iionstech.com.np ==================
+goodgoing.iionstech.com.np {
+        @backend {
+                path /api/* /console/*
+        }
+        header {
+                -Server
+                X-Content-Type-Options "nosniff"
+                X-Frame-Options "DENY"
+                Referrer-Policy "strict-origin-when-cross-origin"
+                X-XSS-Protection "1; mode=block"
+        }
+
+        handle @backend {
+                reverse_proxy backend:8000
+        }
+
+        reverse_proxy website:3000
+}
