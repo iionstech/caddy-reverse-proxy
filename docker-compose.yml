@@ -1,0 +1,32 @@
+version: '3.9'
+
+services:
+  caddy:
+    container_name: caddy_server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    cap_add:
+      - NET_ADMIN
+    env_file:
+      - .env
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./conf:/etc/caddy
+      - ./site:/srv
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - saas_net
+
+networks:
+  saas_net:
+    external: true
+
+volumes:
+  caddy_data:
+  caddy_config:
